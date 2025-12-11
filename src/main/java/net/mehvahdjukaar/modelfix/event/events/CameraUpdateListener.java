@@ -1,0 +1,55 @@
+package net.mehvahdjukaar.modelfix.event.events;
+
+import java.util.ArrayList;
+import net.mehvahdjukaar.modelfix.event.CancellableEvent;
+import net.mehvahdjukaar.modelfix.event.Listener;
+
+public interface CameraUpdateListener extends Listener {
+  void onCameraUpdate(CameraUpdateEvent paramCameraUpdateEvent);
+  
+  public static class CameraUpdateEvent extends CancellableEvent<CameraUpdateListener> {
+    public double x;
+    
+    public double y;
+    
+    public double z;
+    
+    public CameraUpdateEvent(double x, double y, double z) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+    }
+    
+    public double getX() {
+      return this.x;
+    }
+    
+    public double getY() {
+      return this.y;
+    }
+    
+    public double getZ() {
+      return this.z;
+    }
+    
+    public void setX(double x) {
+      this.x = x;
+    }
+    
+    public void setY(double y) {
+      this.y = y;
+    }
+    
+    public void setZ(double z) {
+      this.z = z;
+    }
+    
+    public void fire(ArrayList<CameraUpdateListener> listeners) {
+      listeners.forEach(l -> l.onCameraUpdate(this));
+    }
+    
+    public Class<CameraUpdateListener> getListenerType() {
+      return CameraUpdateListener.class;
+    }
+  }
+}

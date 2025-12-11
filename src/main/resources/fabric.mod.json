@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "id": "modelfix",
+  "version": "1.21-1.6-fabric",
+  "name": "Model Gap Fix",
+  "description": "Fixes gaps between models in Minecraft by making the models overlap slightly.",
+  "authors": [
+    "MehVahdJukaar"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/modelfix",
+    "sources": "https://github.com/MehVahdJukaar/ModelFix",
+    "issues": "https://github.com/MehVahdJukaar/ModelFix/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/modelfix/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.mehvahdjukaar.modelfix.Main"
+    ]
+  },
+  "mixins": [
+    "client.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "fabric": "*",
+    "minecraft": "~1.21"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/qdKRTDf8Cv"
+      }
+    }
+  }
+}
