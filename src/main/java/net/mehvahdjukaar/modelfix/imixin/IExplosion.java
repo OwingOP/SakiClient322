@@ -1,7 +1,7 @@
 package net.mehvahdjukaar.modelfix.imixin;
 
-import net.minecraft.class_243;
+import net.minecraft.util.math.Vec3d;
 
 public interface IExplosion {
-  void set(class_243 paramclass_243, float paramFloat, boolean paramBoolean);
+    void set(Vec3d position, float power, boolean createFire);
 }

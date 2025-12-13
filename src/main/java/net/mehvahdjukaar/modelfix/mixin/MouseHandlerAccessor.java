@@ -1,11 +1,11 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
-import net.minecraft.class_312;
+import net.minecraft.client.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin({class_312.class})
+@Mixin(Mouse.class)
 public interface MouseHandlerAccessor {
-  @Invoker("onMouseButton")
-  void press(long paramLong, int paramInt1, int paramInt2, int paramInt3);
+    @Invoker("onMouseButton")
+    void press(long windowHandle, int button, int action, int modifiers);
 }

@@ -3,8 +3,10 @@ package net.mehvahdjukaar.modelfix.mixin;
 import net.mehvahdjukaar.modelfix.event.Event;
 import net.mehvahdjukaar.modelfix.event.EventManager;
 import net.mehvahdjukaar.modelfix.event.events.ButtonListener;
-import net.minecraft.class_309;
-import net.minecraft.class_310;
+
+import net.minecraft.client.Keyboard;
+import net.minecraft.client.MinecraftClient;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,14 +14,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin({class_309.class})
+@Mixin(Keyboard.class)
 public class KeyboardMixin {
-  @Shadow
-  @Final
-  private class_310 field_1678;
-  
-  @Inject(method = {"onKey"}, at = {@At("HEAD")})
-  private void onPress(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
-    EventManager.fire((Event)new ButtonListener.ButtonEvent(key, window, action));
-  }
+    @Shadow
+    @Final
+    private MinecraftClient client;
+
+    @Inject(method = "onKey", at = @At("HEAD"))
+    private void onPress(long window, int key, int scancode, int action, int modifiers, CallbackInfo ci) {
+        EventManager.fire((Event) new ButtonListener.ButtonEvent(key, window, action));
+    }
 }

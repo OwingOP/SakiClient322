@@ -1,33 +1,33 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
-import net.minecraft.class_4604;
+import net.minecraft.client.render.Frustum;
 import org.joml.FrustumIntersection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin({class_4604.class})
+@Mixin(Frustum.class)
 public interface FrustumAccessor {
-  @Accessor
-  FrustumIntersection getFrustumIntersection();
-  
-  @Accessor
-  void setFrustumIntersection(FrustumIntersection paramFrustumIntersection);
-  
-  @Accessor("x")
-  double getX();
-  
-  @Accessor("x")
-  void setX(double paramDouble);
-  
-  @Accessor("y")
-  double getY();
-  
-  @Accessor("y")
-  void setY(double paramDouble);
-  
-  @Accessor("z")
-  double getZ();
-  
-  @Accessor("z")
-  void setZ(double paramDouble);
+    @Accessor("frustumIntersection")
+    FrustumIntersection getFrustumIntersection();
+
+    @Accessor("frustumIntersection")
+    void setFrustumIntersection(FrustumIntersection frustumIntersection);
+
+    @Accessor("x")
+    double getX();
+
+    @Accessor("x")
+    void setX(double x);
+
+    @Accessor("y")
+    double getY();
+
+    @Accessor("y")
+    void setY(double y);
+
+    @Accessor("z")
+    double getZ();
+
+    @Accessor("z")
+    void setZ(double z);
 }

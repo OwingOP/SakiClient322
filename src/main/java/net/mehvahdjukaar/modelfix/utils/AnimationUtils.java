@@ -1,7 +1,5 @@
 package net.mehvahdjukaar.modelfix.utils;
 
-import net.mehvahdjukaar.modelfix.addons.addon.client.ClickGUI;
-
 public final class AnimationUtils {
   private double value;
   

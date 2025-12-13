@@ -1,12 +1,14 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
-import net.minecraft.class_286;
-import net.minecraft.class_291;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.VertexBuffer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin({class_286.class})
+@Mixin(BufferRenderer.class)
 public interface BufferRendererAccessor {
-  @Accessor("currentVertexBuffer")
-  static void setCurrentVertexBuffer(class_291 vertexBuffer) {}
+    @Accessor("currentVertexBuffer")
+    static void setCurrentVertexBuffer(VertexBuffer vertexBuffer) {
+        throw new UnsupportedOperationException();
+    }
 }

@@ -1,19 +1,20 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
-import net.minecraft.class_4604;
-import net.minecraft.class_761;
-import net.minecraft.class_769;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.chunk.ChunkBuilder;
+import net.minecraft.client.render.Frustum;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin({class_761.class})
+@Mixin(WorldRenderer.class)
 public interface WorldRendererAccessor {
-  @Accessor("chunks")
-  class_769 getChunks();
-  
-  @Accessor
-  class_4604 getFrustum();
-  
-  @Accessor
-  void setFrustum(class_4604 paramclass_4604);
+    @Accessor("chunks")
+    ChunkBuilder getChunks();
+
+    @Accessor("frustum")
+    Frustum getFrustum();
+
+    @Accessor("frustum")
+    void setFrustum(Frustum frustum);
 }

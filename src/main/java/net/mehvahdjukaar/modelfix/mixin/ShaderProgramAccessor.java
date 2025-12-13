@@ -1,13 +1,15 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
 import java.util.Map;
-import net.minecraft.class_284;
-import net.minecraft.class_5944;
+
+import net.minecraft.client.gl.GlUniform;
+import net.minecraft.client.gl.ShaderProgram;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin({class_5944.class})
+@Mixin(ShaderProgram.class)
 public interface ShaderProgramAccessor {
-  @Accessor("loadedUniforms")
-  Map<String, class_284> getLoadedUniforms();
+    @Accessor("loadedUniforms")
+    Map<String, GlUniform> getLoadedUniforms();
 }

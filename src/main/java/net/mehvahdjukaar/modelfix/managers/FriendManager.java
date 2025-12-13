@@ -3,36 +3,37 @@ package net.mehvahdjukaar.modelfix.managers;
 import java.util.HashSet;
 import java.util.Set;
 import net.mehvahdjukaar.modelfix.saki;
-import net.minecraft.class_1297;
-import net.minecraft.class_1657;
-import net.minecraft.class_239;
-import net.minecraft.class_3966;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.hit.EntityHitResult;
 
+/**
+ * Entity-based friend manager, supports checking if the player is aiming at a friend.
+ */
 public final class FriendManager {
-  private final Set<String> friends = new HashSet<>();
-  
-  public void addFriend(class_1657 player) {
-    this.friends.add(player.method_5477().getString());
-  }
-  
-  public void removeFriend(class_1657 player) {
-    this.friends.remove(player.method_5477().getString());
-  }
-  
-  public boolean isFriend(class_1657 player) {
-    return this.friends.contains(player.method_5477().getString());
-  }
-  
-  public boolean isAimingOverFriend() {
-    class_239 class_239 = saki.mc.field_1765;
-    if (class_239 instanceof class_3966) {
-      class_3966 hitResult = (class_3966)class_239;
-      class_1297 entity = hitResult.method_17782();
-      if (entity instanceof class_1657) {
-        class_1657 player = (class_1657)entity;
-        return isFriend(player);
-      } 
-    } 
-    return false;
-  }
+    private final Set<String> friends = new HashSet<>();
+
+    public void addFriend(PlayerEntity player) {
+        this.friends.add(player.getName().getString());
+    }
+
+    public void removeFriend(PlayerEntity player) {
+        this.friends.remove(player.getName().getString());
+    }
+
+    public boolean isFriend(PlayerEntity player) {
+        return this.friends.contains(player.getName().getString());
+    }
+
+    public boolean isAimingOverFriend() {
+        HitResult hitResult = saki.mc.crosshairTarget;
+        if (hitResult instanceof EntityHitResult) {
+            Entity entity = ((EntityHitResult) hitResult).getEntity();
+            if (entity instanceof PlayerEntity player) {
+                return isFriend(player);
+            }
+        }
+        return false;
+    }
 }

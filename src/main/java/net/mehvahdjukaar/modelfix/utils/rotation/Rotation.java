@@ -1,61 +1,45 @@
 package net.mehvahdjukaar.modelfix.utils.rotation;
 
-public final class Rotation extends Record {
-  private final double yaw;
-  
-  private final double pitch;
-  
-  public Rotation(double yaw, double pitch) {
-    this.yaw = yaw;
-    this.pitch = pitch;
-  }
-  
-  public final String toString() {
-    // Byte code:
-    //   0: aload_0
-    //   1: <illegal opcode> toString : (Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;)Ljava/lang/String;
-    //   6: areturn
-    // Line number table:
-    //   Java source line number -> byte code offset
-    //   #4	-> 0
-    // Local variable table:
-    //   start	length	slot	name	descriptor
-    //   0	7	0	this	Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;
-  }
-  
-  public final int hashCode() {
-    // Byte code:
-    //   0: aload_0
-    //   1: <illegal opcode> hashCode : (Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;)I
-    //   6: ireturn
-    // Line number table:
-    //   Java source line number -> byte code offset
-    //   #4	-> 0
-    // Local variable table:
-    //   start	length	slot	name	descriptor
-    //   0	7	0	this	Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;
-  }
-  
-  public final boolean equals(Object o) {
-    // Byte code:
-    //   0: aload_0
-    //   1: aload_1
-    //   2: <illegal opcode> equals : (Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;Ljava/lang/Object;)Z
-    //   7: ireturn
-    // Line number table:
-    //   Java source line number -> byte code offset
-    //   #4	-> 0
-    // Local variable table:
-    //   start	length	slot	name	descriptor
-    //   0	8	0	this	Lnet/mehvahdjukaar/modelfix/utils/rotation/Rotation;
-    //   0	8	1	o	Ljava/lang/Object;
-  }
-  
-  public double yaw() {
-    return this.yaw;
-  }
-  
-  public double pitch() {
-    return this.pitch;
-  }
+/**
+ * Immutable rotation holder with yaw and pitch.
+ */
+public final class Rotation {
+    private final double yaw;
+    private final double pitch;
+
+    public Rotation(double yaw, double pitch) {
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    public double yaw() {
+        return yaw;
+    }
+
+    public double pitch() {
+        return pitch;
+    }
+
+    @Override
+    public String toString() {
+        return "Rotation{yaw=" + yaw + ", pitch=" + pitch + '}';
+    }
+
+    @Override
+    public int hashCode() {
+        long temp = Double.doubleToLongBits(yaw);
+        int result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(pitch);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Rotation)) return false;
+        Rotation other = (Rotation) o;
+        return Double.compare(other.yaw, yaw) == 0 &&
+                Double.compare(other.pitch, pitch) == 0;
+    }
 }

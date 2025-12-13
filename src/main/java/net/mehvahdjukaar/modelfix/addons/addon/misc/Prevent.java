@@ -10,84 +10,104 @@ import net.mehvahdjukaar.modelfix.event.events.BlockBreakingListener;
 import net.mehvahdjukaar.modelfix.event.events.ItemUseListener;
 import net.mehvahdjukaar.modelfix.utils.BlockUtils;
 import net.mehvahdjukaar.modelfix.utils.EncryptedString;
-import net.minecraft.class_1802;
-import net.minecraft.class_2246;
-import net.minecraft.class_239;
-import net.minecraft.class_3965;
-import net.minecraft.class_4587;
+
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.EndCrystalItem;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.block.Blocks;
 
 public final class Prevent extends Module implements ItemUseListener, AttackListener, BlockBreakingListener {
-  private final BooleanSetting doubleGlowstone = (BooleanSetting)(new BooleanSetting((CharSequence)EncryptedString.of("Double Glowstone"), false))
-    .setDescription((CharSequence)EncryptedString.of("Makes it so you can't charge the anchor again if it's already charged"));
-  
-  private final BooleanSetting glowstoneMisplace = (BooleanSetting)(new BooleanSetting((CharSequence)EncryptedString.of("Glowstone Misplace"), false))
-    .setDescription((CharSequence)EncryptedString.of("Makes it so you can only right-click with glowstone only when aiming at an anchor"));
-  
-  private final BooleanSetting anchorOnAnchor = (BooleanSetting)(new BooleanSetting((CharSequence)EncryptedString.of("Anchor on Anchor"), false))
-    .setDescription((CharSequence)EncryptedString.of("Makes it so you can't place an anchor on/next to another anchor unless charged"));
-  
-  private final BooleanSetting obiPunch = (BooleanSetting)(new BooleanSetting((CharSequence)EncryptedString.of("Obi Punch"), false))
-    .setDescription((CharSequence)EncryptedString.of("Makes it so you can crystal faster by not letting you left click/start breaking the obsidian"));
-  
-  private final BooleanSetting echestClick = (BooleanSetting)(new BooleanSetting((CharSequence)EncryptedString.of("E-chest click"), false))
-    .setDescription((CharSequence)EncryptedString.of("Makes it so you can't click on e-chests with PvP items"));
-  
-  public Prevent() {
-    super((CharSequence)EncryptedString.of("Prevent"), -1, Category.MISC);
-    addSettings(new Setting[] { (Setting)this.doubleGlowstone, (Setting)this.glowstoneMisplace, (Setting)this.anchorOnAnchor, (Setting)this.obiPunch, (Setting)this.echestClick });
-  }
-  
-  public void onEnable() {
-    this.eventManager.add(BlockBreakingListener.class, (Listener)this);
-    this.eventManager.add(AttackListener.class, (Listener)this);
-    this.eventManager.add(ItemUseListener.class, (Listener)this);
-    super.onEnable();
-  }
-  
-  public void onDisable() {
-    this.eventManager.remove(BlockBreakingListener.class, (Listener)this);
-    this.eventManager.remove(AttackListener.class, (Listener)this);
-    this.eventManager.remove(ItemUseListener.class, (Listener)this);
-    super.onDisable();
-  }
-  
-  public void onRender3D(class_4587 matrixStack, float partialTicks) {}
-  
-  public void onAttack(AttackListener.AttackEvent event) {
-    class_239 class_239 = this.mc.field_1765;
-    if (class_239 instanceof class_3965) {
-      class_3965 hit = (class_3965)class_239;
-      if (BlockUtils.isBlock(hit.method_17777(), class_2246.field_10540) && this.obiPunch.getValue() && this.mc.field_1724.method_24518(class_1802.field_8301))
-        event.cancel(); 
-    } 
-  }
-  
-  public void onBlockBreaking(BlockBreakingListener.BlockBreakingEvent event) {
-    class_239 class_239 = this.mc.field_1765;
-    if (class_239 instanceof class_3965) {
-      class_3965 hit = (class_3965)class_239;
-      if (BlockUtils.isBlock(hit.method_17777(), class_2246.field_10540) && this.obiPunch.getValue() && this.mc.field_1724.method_24518(class_1802.field_8301))
-        event.cancel(); 
-    } 
-  }
-  
-  public void onItemUse(ItemUseListener.ItemUseEvent event) {
-    class_239 class_239 = this.mc.field_1765;
-    if (class_239 instanceof class_3965) {
-      class_3965 hit = (class_3965)class_239;
-      if (BlockUtils.isAnchorCharged(hit.method_17777()) && this.doubleGlowstone.getValue() && this.mc.field_1724.method_24518(class_1802.field_8801))
-        event.cancel(); 
-      if (!BlockUtils.isBlock(hit.method_17777(), class_2246.field_23152) && this.glowstoneMisplace.getValue() && this.mc.field_1724.method_24518(class_1802.field_8801))
-        event.cancel(); 
-      if (BlockUtils.isAnchorNotCharged(hit.method_17777()) && this.anchorOnAnchor.getValue() && this.mc.field_1724.method_24518(class_1802.field_23141))
-        event.cancel(); 
-      if (BlockUtils.isBlock(hit.method_17777(), class_2246.field_10443) && this.echestClick.getValue() && (this.mc.field_1724
-        .method_6047().method_7909() instanceof net.minecraft.class_1829 || this.mc.field_1724
-        .method_6047().method_7909() == class_1802.field_8301 || this.mc.field_1724
-        .method_6047().method_7909() == class_1802.field_8281 || this.mc.field_1724
-        .method_6047().method_7909() == class_1802.field_23141 || this.mc.field_1724
-        .method_6047().method_7909() == class_1802.field_8801))
-        event.cancel(); 
-    } 
-  }
+    private final BooleanSetting doubleGlowstone = new BooleanSetting(EncryptedString.of("Double Glowstone"), false)
+            .setDescription(EncryptedString.of("Makes it so you can't charge the anchor again if it's already charged"));
+
+    private final BooleanSetting glowstoneMisplace = new BooleanSetting(EncryptedString.of("Glowstone Misplace"), false)
+            .setDescription(EncryptedString.of("Makes it so you can only right-click with glowstone only when aiming at an anchor"));
+
+    private final BooleanSetting anchorOnAnchor = new BooleanSetting(EncryptedString.of("Anchor on Anchor"), false)
+            .setDescription(EncryptedString.of("Makes it so you can't place an anchor on/next to another anchor unless charged"));
+
+    private final BooleanSetting obiPunch = new BooleanSetting(EncryptedString.of("Obi Punch"), false)
+            .setDescription(EncryptedString.of("Makes it so you can crystal faster by not letting you left click/start breaking the obsidian"));
+
+    private final BooleanSetting echestClick = new BooleanSetting(EncryptedString.of("E-chest click"), false)
+            .setDescription(EncryptedString.of("Makes it so you can't click on e-chests with PvP items"));
+
+    public Prevent() {
+        super(EncryptedString.of("Prevent"), -1, Category.MISC);
+        addSettings(new Setting[]{this.doubleGlowstone, this.glowstoneMisplace, this.anchorOnAnchor, this.obiPunch, this.echestClick});
+    }
+
+    @Override
+    public void onEnable() {
+        this.eventManager.add(BlockBreakingListener.class, this);
+        this.eventManager.add(AttackListener.class, this);
+        this.eventManager.add(ItemUseListener.class, this);
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        this.eventManager.remove(BlockBreakingListener.class, this);
+        this.eventManager.remove(AttackListener.class, this);
+        this.eventManager.remove(ItemUseListener.class, this);
+        super.onDisable();
+    }
+
+    @Override
+    public void onRender3D(MatrixStack matrixStack, float partialTicks) {}
+
+    @Override
+    public void onAttack(AttackListener.AttackEvent event) {
+        HitResult hitResult = this.mc.crosshairTarget;
+        if (hitResult instanceof BlockHitResult) {
+            BlockHitResult hit = (BlockHitResult) hitResult;
+            if (BlockUtils.isBlock(hit.getBlockPos(), Blocks.OBSIDIAN) && this.obiPunch.getValue()
+                    && this.mc.player.isHolding(Items.END_CRYSTAL)) {
+                event.cancel();
+            }
+        }
+    }
+
+    @Override
+    public void onBlockBreaking(BlockBreakingListener.BlockBreakingEvent event) {
+        HitResult hitResult = this.mc.crosshairTarget;
+        if (hitResult instanceof BlockHitResult) {
+            BlockHitResult hit = (BlockHitResult) hitResult;
+            if (BlockUtils.isBlock(hit.getBlockPos(), Blocks.OBSIDIAN) && this.obiPunch.getValue()
+                    && this.mc.player.isHolding(Items.END_CRYSTAL)) {
+                event.cancel();
+            }
+        }
+    }
+
+    @Override
+    public void onItemUse(ItemUseListener.ItemUseEvent event) {
+        HitResult hitResult = this.mc.crosshairTarget;
+        if (hitResult instanceof BlockHitResult) {
+            BlockHitResult hit = (BlockHitResult) hitResult;
+
+            if (BlockUtils.isAnchorCharged(hit.getBlockPos()) && this.doubleGlowstone.getValue()
+                    && this.mc.player.isHolding(Items.GLOWSTONE)) {
+                event.cancel();
+            }
+            if (!BlockUtils.isBlock(hit.getBlockPos(), Blocks.RESPAWN_ANCHOR) && this.glowstoneMisplace.getValue()
+                    && this.mc.player.isHolding(Items.GLOWSTONE)) {
+                event.cancel();
+            }
+            if (BlockUtils.isAnchorNotCharged(hit.getBlockPos()) && this.anchorOnAnchor.getValue()
+                    && this.mc.player.isHolding(Items.RESPAWN_ANCHOR)) {
+                event.cancel();
+            }
+            if (BlockUtils.isBlock(hit.getBlockPos(), Blocks.ENDER_CHEST) && this.echestClick.getValue()
+                    && (this.mc.player.getMainHandStack().getItem() instanceof EndCrystalItem
+                    || this.mc.player.getMainHandStack().getItem() == Items.END_CRYSTAL
+                    || this.mc.player.getMainHandStack().getItem() == Items.OBSIDIAN
+                    || this.mc.player.getMainHandStack().getItem() == Items.RESPAWN_ANCHOR
+                    || this.mc.player.getMainHandStack().getItem() == Items.GLOWSTONE)) {
+                event.cancel();
+            }
+        }
+    }
 }

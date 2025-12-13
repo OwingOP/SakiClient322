@@ -1,12 +1,12 @@
 package net.mehvahdjukaar.modelfix.mixin;
 
-import net.minecraft.class_1735;
-import net.minecraft.class_465;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.screen.slot.Slot;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin({class_465.class})
+@Mixin(HandledScreen.class)
 public interface HandledScreenMixin {
-  @Accessor
-  class_1735 getFocusedSlot();
+    @Accessor("focusedSlot")
+    Slot getFocusedSlot();
 }

@@ -1,9 +1,9 @@
 package net.mehvahdjukaar.modelfix.imixin;
 
-import net.minecraft.class_1297;
-import net.minecraft.class_243;
-import net.minecraft.class_3959;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.RaycastContext;
 
 public interface IRaycastContext {
-  void set(class_243 paramclass_2431, class_243 paramclass_2432, class_3959.class_3960 paramclass_3960, class_3959.class_242 paramclass_242, class_1297 paramclass_1297);
+    void set(Vec3d start, Vec3d end, RaycastContext.ShapeType shapeType, RaycastContext.FluidHandling fluidHandling, Entity entity);
 }

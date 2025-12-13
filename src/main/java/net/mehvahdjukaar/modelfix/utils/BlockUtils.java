@@ -2,72 +2,93 @@ package net.mehvahdjukaar.modelfix.utils;
 
 import java.util.List;
 import java.util.stream.Stream;
+
 import net.mehvahdjukaar.modelfix.saki;
 import net.mehvahdjukaar.modelfix.utils.rotation.Rotation;
-import net.minecraft.class_1297;
-import net.minecraft.class_2246;
-import net.minecraft.class_2248;
-import net.minecraft.class_2338;
-import net.minecraft.class_238;
-import net.minecraft.class_2769;
-import net.minecraft.class_4969;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.RespawnAnchorBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
 public final class BlockUtils {
-  public static boolean isBlock(class_2338 pos, class_2248 block) {
-    return (saki.mc.field_1687.method_8320(pos).method_26204() == block);
-  }
-  
-  public static void rotateToBlock(class_2338 pos) {
-    assert saki.mc.field_1724 != null;
-    Rotation rotation = RotationUtils.getDirection((class_1297)saki.mc.field_1724, pos.method_46558());
-      saki.mc.field_1724.method_36457((float)rotation.pitch());
-      saki.mc.field_1724.method_36456((float)rotation.yaw());
-  }
-  
-  public static boolean isAnchorCharged(class_2338 pos) {
-    if (isBlock(pos, class_2246.field_23152))
-      return (((Integer)saki.mc.field_1687.method_8320(pos).method_11654((class_2769)class_4969.field_23153)).intValue() != 0);
-    return false;
-  }
-  
-  public static boolean isAnchorNotCharged(class_2338 pos) {
-    if (isBlock(pos, class_2246.field_23152))
-      return (((Integer)saki.mc.field_1687.method_8320(pos).method_11654((class_2769)class_4969.field_23153)).intValue() == 0);
-    return false;
-  }
-  
-  public static boolean canPlaceBlockClient(class_2338 block) {
-    class_2338 up = block.method_10084();
-    if (!saki.mc.field_1687.method_22347(up))
-      return false; 
-    double x = up.method_10263();
-    double y = up.method_10264();
-    double z = up.method_10260();
-    List<class_1297> list = saki.mc.field_1687.method_8335(null, new class_238(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D));
-    list.removeIf(entity -> entity instanceof net.minecraft.class_1542);
-    return list.isEmpty();
-  }
-  
-  public static Stream<class_2338> getAllInBoxStream(class_2338 from, class_2338 to) {
-    class_2338 min = new class_2338(Math.min(from.method_10263(), to.method_10263()), Math.min(from.method_10264(), to.method_10264()), Math.min(from.method_10260(), to.method_10260()));
-    class_2338 max = new class_2338(Math.max(from.method_10263(), to.method_10263()), Math.max(from.method_10264(), to.method_10264()), Math.max(from.method_10260(), to.method_10260()));
-    Stream<class_2338> stream = Stream.iterate(min, pos -> {
-          int x = pos.method_10263();
-          int y = pos.method_10264();
-          int z = pos.method_10260();
-          if (++x > max.method_10263()) {
-            x = min.method_10263();
-            y++;
-          } 
-          if (y > max.method_10264()) {
-            y = min.method_10264();
-            z++;
-          } 
-          if (z > max.method_10260())
-            throw new IllegalStateException("Stream limit didn't work."); 
-          return new class_2338(x, y, z);
+    public static boolean isBlock(BlockPos pos, Block block) {
+        return saki.mc.world.getBlockState(pos).getBlock() == block;
+    }
+
+    public static void rotateToBlock(BlockPos pos) {
+        assert saki.mc.player != null;
+        Rotation rotation = RotationUtils.getDirection((Entity) saki.mc.player, pos.toCenterPos());
+        saki.mc.player.setPitch((float) rotation.pitch());
+        saki.mc.player.setYaw((float) rotation.yaw());
+    }
+
+    public static boolean isAnchorCharged(BlockPos pos) {
+        if (isBlock(pos, Blocks.RESPAWN_ANCHOR)) {
+            return saki.mc.world.getBlockState(pos).get(RespawnAnchorBlock.CHARGES) != 0;
+        }
+        return false;
+    }
+
+    public static boolean isAnchorNotCharged(BlockPos pos) {
+        if (isBlock(pos, Blocks.RESPAWN_ANCHOR)) {
+            return saki.mc.world.getBlockState(pos).get(RespawnAnchorBlock.CHARGES) == 0;
+        }
+        return false;
+    }
+
+    public static boolean canPlaceBlockClient(BlockPos block) {
+        BlockPos up = block.up();
+        if (!saki.mc.world.isAir(up)) return false;
+
+        double x = up.getX();
+        double y = up.getY();
+        double z = up.getZ();
+
+        List<Entity> list = saki.mc.world.getEntities(null, new Box(x, y, z, x + 1.0D, y + 1.0D, z + 1.0D));
+        list.removeIf(entity -> entity instanceof ItemEntity);
+        return list.isEmpty();
+    }
+
+    public static Stream<BlockPos> getAllInBoxStream(BlockPos from, BlockPos to) {
+        BlockPos min = new BlockPos(
+                Math.min(from.getX(), to.getX()),
+                Math.min(from.getY(), to.getY()),
+                Math.min(from.getZ(), to.getZ())
+        );
+        BlockPos max = new BlockPos(
+                Math.max(from.getX(), to.getX()),
+                Math.max(from.getY(), to.getY()),
+                Math.max(from.getZ(), to.getZ())
+        );
+
+        Stream<BlockPos> stream = Stream.iterate(min, pos -> {
+            int x = pos.getX();
+            int y = pos.getY();
+            int z = pos.getZ();
+
+            if (++x > max.getX()) {
+                x = min.getX();
+                y++;
+            }
+            if (y > max.getY()) {
+                y = min.getY();
+                z++;
+            }
+            if (z > max.getZ()) {
+                throw new IllegalStateException("Stream limit didn't work.");
+            }
+            return new BlockPos(x, y, z);
         });
-    int limit = (max.method_10263() - min.method_10263() + 1) * (max.method_10264() - min.method_10264() + 1) * (max.method_10260() - min.method_10260() + 1);
-    return stream.limit(limit);
-  }
+
+        int limit = (max.getX() - min.getX() + 1)
+                * (max.getY() - min.getY() + 1)
+                * (max.getZ() - min.getZ() + 1);
+
+        return stream.limit(limit);
+    }
 }
